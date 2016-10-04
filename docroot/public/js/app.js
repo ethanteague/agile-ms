@@ -11,14 +11,14 @@ angular.module('app', [
   'app.node',
   'ui.router',
   'drupalService',
-  'googleMap',
   'rawService',
   'scrollTo',
   'ui.bootstrap',
   'ngSanitize',
   'ngAnimate',
   'ngResource',
-  'ngTouch'
+  'ngTouch',
+  'uiGmapgoogle-maps'
 ])
 
 .run(
