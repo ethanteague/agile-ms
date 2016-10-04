@@ -1,15 +1,14 @@
 'use strict';
 
-angular.module('app', ['uiGmapgoogle-maps'])
+angular.module('app')
   .controller('mainCtrl', function($scope, $rootScope) {
 
-    $http({
-      url: $rootScope.rawUrl,
-      method: "GET",
-      params: {user_id: data}
-    });
+    // $http({
+    //   url: $rootScope.rawUrl,
+    //   method: "GET",
+    //   params: {user_id: data}
+    // });
 
-//console.log();
     console.log($rootScope.rawUrl);
     $scope.map = {
       center: {
