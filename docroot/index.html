@@ -1,308 +1,319 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Agile MS</title>
+  <title>Agile MS</title>
 
-    <link href="public/css/app.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link href="public/css/app.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script>
-        // Global results object
-        var filteredResults = new function () {
-            // callback for angular
-            this.onChangeCallback = null;
-            // Possible filters
-            this.activeFilters = {};
-            // full results list for filtering
-            this.fullResults = [];
-            // filtered results
-            this.results = [];
-            // Setter for zipcode
-            this.applyFilters = function() {
-                // Filter by zip
-                var results = [];
-                if(this.activeFilters.zip) {
-                   results = this.fullResults.filter(function(item) {
-                        return parseInt(this.activeFilters.zip) === parseInt(item.PhysicalZipCode)
-                   }, this);
-                }
-                // @TODO more filters
-                // Call angular callback
-                if(this.onChangeCallback) {
-                    this.onChangeCallback(results);
-                } 
-                this.results = results; 
-            }
-            // sets Filters, calls applyFilters
-            this.setFilters = function(filters) {
-                // Either set set or default
-                // @TODO more filter properties
-                this.activeFilters = filters || {
-                    zip: null
-                };
-                this.applyFilters();
-            }
-            // Init
-            this.setFilters();
-        };
-
-    </script>
-  </head>
-
-  <body role="document" page-ready>
-    <base href="/">
-    <div class="container page">
-        <main>
-          <!--
-          HEADER ROW
-          -->
-          <div id="header">
-            <div class="panel panel-default">
-                <div class="panel-heading">Search</div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="form-group col-sm-6">
-                            <div class="input-group">
-                                <input class="form-control" type="text" id="zip-code" />
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary" onclick="searchForZip()">Search by Zip Code</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <h5 id="result-note"></h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </div>
-
-          <!--
-          MAP ROW
-          -->
-          <div id="map" style="height:500px;">
-
-          </div>
-
-          <!--
-          ADVANCED SEARCH ROW
-          -->
-          <div id="advanced-search" class="row">
-
-            <!--
-            FILTERS COLUMN
-            -->
-            <div id="advanced-search-filters" class="col-sm-4 col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>Filter</h4>
-                    </div>
-                </div>
-            </div>
-
-            <!--
-            LISTING COLUMN
-            -->
-            <div id="advanced-search-listing" class="col-sm-8 col-md-9">
-              <resource-list />
-            </div>
-          </div>
-
-        </main>
-    </div><!-- /.page -->
-
-    <script src="public/js/jquery.min.js"></script>
-    <script src="public/js/bootstrap.js"></script>
-    <script src="public/js/angular.js"></script>
-    <script src="public/js/angular-sanitize.js"></script>
-    <script src="public/js/angular-animate.js"></script>
-    <script src="public/js/angular-resource.js"></script>
-    <script src="public/js/angular-touch.js"></script>
-    <script src="public/js/ui-bootstrap.js"></script>
-    <!-- App -->
-    <script src="public/js/app.js"></script>
-    <!-- Providers -->
-    <script src="public/js/providers/rawService.js"></script>
-    <!-- Controllers -->
-    <script src="public/js/controllers/resource/resourceCtrl.js"></script>
-    <!-- Directives -->
-    <script src="public/js/directives/resource/resource.js"></script>
-
-    <script>
-      /**
-       * Querys JSON, populates global variable
-       */
-      function resetResults(callback) {
-        // Already have data
-        if(filteredResults.fullResults && filteredResults.fullResults.length) {
-            return callback();
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <script>
+    // Global results object
+    var filteredResults = new function () {
+      // callback for angular
+      this.onChangeCallback = null;
+      // Possible filters
+      this.activeFilters = {};
+      // full results list for filtering
+      this.fullResults = [];
+      // filtered results
+      this.results = [];
+      // Setter for zipcode
+      this.applyFilters = function () {
+        // Filter by zip
+        var results = [];
+        if (this.activeFilters.zip) {
+          results = this.fullResults.filter(function (item) {
+            return parseInt(this.activeFilters.zip) === parseInt(item.PhysicalZipCode)
+          }, this);
         }
-        // Query json
-        $.getJSON(
-            'https://raw.githubusercontent.com/CivicActions/agile-ms/master/data/MS%20ITS%20RFP%203717-Vendor%20Challenge%20Dataset%20FINAL.json'
-            , function( data ) {
-                // add unique ids to objects, set fullResults 
-                filteredResults.fullResults = data.map(function(item, key) {
-                    item.id = key;
-                    return item;
-                } );
-                callback();
-            }
-        );
+        // @TODO more filters
+        // Call angular callback
+        if (this.onChangeCallback) {
+          this.onChangeCallback(results);
+        }
+        this.results = results;
       }
-
-      /**
-       * Filters filter: { zip: 39202 }
-       */
-      function filterResults(filters, callback) {
-        // Data set empty, so grab
-        resetResults(function() {
-            // Filter by zip
-            filteredResults.setFilters(filters);
-            callback();
-        });
-      }
-
-      /**
-       * Searches zip from input
-       */
-      function searchForZip() {
-        var filters = {
-            zip: document.getElementById('zip-code').value
-        };
-        // Got a new zip, so filter
-        filterResults(filters, function() {
-            renderNote();
-            renderMap();
-            renderFilters();
-        });
-      }
-
-
-      function renderMap() {
-        console.log(filteredResults);
-        var userSelect = '39428';
-        var map;
-        var mapgeo = new google.maps.Geocoder;
-        mapgeo.geocode({'address': userSelect}, function (results, status) {
-
-          if (status == google.maps.GeocoderStatus.OK) {
-            var lat2 = results[0].geometry.location.lat();
-            var lng2 = results[0].geometry.location.lng();
-            localStorage.setItem('maplat', lat2);
-            localStorage.setItem('maplng', lng2);
-          }
-
-        })
-
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 6,
-          center: new google.maps.LatLng(localStorage.getItem('maplat'), localStorage.getItem('maplng')),
-          mapTypeId: 'roadmap',
-        });
-
-        var features = [];
-
-        var items = [];
-        var endpoint = resetResults();
-        var dataItems = $.getJSON("https://raw.githubusercontent.com/CivicActions/agile-ms/master/data/MS%20ITS%20RFP%203717-Vendor%20Challenge%20Dataset%20FINAL.json", function (data) {
-          var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-          var icons = {
-            info: {
-              icon: iconBase + 'info-i_maps.png'
-            }
+      // sets Filters, calls applyFilters
+      this.setFilters = function (filters) {
+        // Either set set or default
+        // @TODO more filter properties
+        this.activeFilters = filters || {
+            zip: null
           };
-
-          var sortedItems = [];
-          $.each(dataItems.responseJSON, function (key, val) {
-            if (val.PhysicalZipCode == userSelect) {
-              sortedItems.push(this);
-            }
-          })
-          localStorage.setItem('points', JSON.stringify(sortedItems));
-
-        });
-
-        var geo = new google.maps.Geocoder;
-        var items = JSON.parse(localStorage.getItem('points'));
-
-        $.each(items, function (key, val) {
-          // items.push(val.ProviderName);
-          geo.geocode({'address': val.PhysicalZipCode}, function (results, status) {
-
-            if (status == google.maps.GeocoderStatus.OK) {
-              if (val.PhysicalZipCode == '39428') {
-                var lat = results[0].geometry.location.lat();
-                var lng = results[0].geometry.location.lng();
-                var marker = new google.maps.Marker({
-                  position: {lat: lat, lng: lng},
-                  type: 'info',
-                  //icon: icons[feature.type].icon,
-                  map: map
-                });
-                var html = "<b>" + val.ProviderName + " </b> <br/> " + val.PhysicalCity + ", <br/> " + val.ProviderTypeDescription + " <br />Rating: " + val.QualityRating
-                  +  "<br/> " + val.PhoneNumber;
-
-                var infoWindow = new google.maps.InfoWindow;
-                google.maps.event.addListener(marker, 'click', function(){
-                  infoWindow.setContent(html);
-                  infoWindow.open(map, marker);
-                });
-              }
-            }
-          });
-
-        });
+        this.applyFilters();
       }
+      // Init
+      this.setFilters();
+    };
 
-      function renderFilters() {
-        //alert('in render filters ' + filteredResults.length());
+  </script>
+</head>
+
+<body role="document" page-ready>
+<base href="/">
+<div class="container page">
+  <main>
+    <!--
+    HEADER ROW
+    -->
+    <div id="header">
+      <div class="panel panel-default">
+        <div class="panel-heading">Search</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <div class="input-group">
+                <input class="form-control" type="text" id="zip-code"/>
+                <div class="input-group-btn">
+                  <button class="btn btn-primary" onclick="searchForZip()">Search by Zip Code</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <h5 id="result-note"></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    MAP ROW
+    -->
+    <div id="map">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div id="map-interior" style="height:500px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    ADVANCED SEARCH ROW
+    -->
+    <div id="advanced-search" class="row">
+
+      <!--
+      FILTERS COLUMN
+      -->
+      <div id="advanced-search-filters" class="col-sm-4 col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Filter</h4>
+          </div>
+        </div>
+      </div>
+
+      <!--
+      LISTING COLUMN
+      -->
+      <div id="advanced-search-listing" class="col-sm-8 col-md-9">
+        <resource-list/>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /.page -->
+
+<script src="public/js/jquery.min.js"></script>
+<script src="public/js/bootstrap.js"></script>
+<script src="public/js/angular.js"></script>
+<script src="public/js/angular-sanitize.js"></script>
+<script src="public/js/angular-animate.js"></script>
+<script src="public/js/angular-resource.js"></script>
+<script src="public/js/angular-touch.js"></script>
+<script src="public/js/ui-bootstrap.js"></script>
+<!-- App -->
+<script src="public/js/app.js"></script>
+<!-- Providers -->
+<script src="public/js/providers/rawService.js"></script>
+<!-- Controllers -->
+<script src="public/js/controllers/resource/resourceCtrl.js"></script>
+<!-- Directives -->
+<script src="public/js/directives/resource/resource.js"></script>
+
+<script>
+  /**
+   * Querys JSON, populates global variable
+   */
+  function resetResults(callback) {
+    // Already have data
+    if (filteredResults.fullResults && filteredResults.fullResults.length) {
+      return callback();
+    }
+    // Query json
+    $.getJSON(
+      'https://raw.githubusercontent.com/CivicActions/agile-ms/master/data/MS%20ITS%20RFP%203717-Vendor%20Challenge%20Dataset%20FINAL.json'
+      , function (data) {
+        // add unique ids to objects, set fullResults
+        filteredResults.fullResults = data.map(function (item, key) {
+          item.id = key;
+          return item;
+        });
+        callback();
       }
+    );
+  }
 
+  /**
+   * Filters filter: { zip: 39202 }
+   */
+  function filterResults(filters, callback) {
+    // Data set empty, so grab
+    resetResults(function () {
+      // Filter by zip
+      filteredResults.setFilters(filters);
+      callback();
+    });
+  }
+
+  /**
+   * Searches zip from input
+   */
+  function searchForZip() {
+    var filters = {
+      zip: document.getElementById('zip-code').value
+    };
+    // Got a new zip, so filter
+    filterResults(filters, function () {
+      renderNote();
+      renderMap();
+      renderFilters();
+    });
+  }
+
+
+  function renderMap() {
+    console.log(filteredResults);
+    if (filteredResults.activeFilters.zip) {
+      var userSelect = filteredResults.activeFilters.zip;
+      getCoords();
+    }
+    else {
+      var userSelect = '39209';
+      getCoords();
       /**
-       * Changes text next to search
+       * @TODO - add html geolocation - leaving out for now as it doesn't play nice with markers callback.
+       *
+       * if (navigator.geolocation) {
+       * navigator.geolocation.getCurrentPosition(showPosition);
+       * } else {
+       * var userSelect = '39209'
+       * getCoords();
+       * }
        */
-      function renderNote() {
-        //alert('in render listing ' + filteredResults.length());
-        var text;
-        if(!filteredResults.results || !filteredResults.results.length) {
-            text = '';
+    }
+
+
+    function showPosition(position) {
+      localStorage.setItem('maplat', position.coords.latitude);
+      localStorage.setItem('maplng', position.coords.longitude);
+    }
+
+    var map;
+
+    function getCoords() {
+      var mapgeo = new google.maps.Geocoder;
+      mapgeo.geocode({'address': userSelect}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          var lat2 = results[0].geometry.location.lat();
+          var lng2 = results[0].geometry.location.lng();
+          localStorage.setItem('maplat', lat2);
+          localStorage.setItem('maplng', lng2);
         }
-        else {
-            text = "There are " + filteredResults.results.length 
-                 + " child care providers within the " + filteredResults.activeFilters.zip + " zipcode.";
+
+      })
+    }
+
+    map = new google.maps.Map(document.getElementById('map-interior'), {
+      zoom: 11,
+      center: new google.maps.LatLng(localStorage.getItem('maplat'), localStorage.getItem('maplng')),
+      mapTypeId: 'roadmap',
+    });
+
+    var features = [];
+
+    var items = [];
+
+
+    var geo = new google.maps.Geocoder;
+    var items = filteredResults.results;
+
+    $.each(items, function (key, val) {
+
+      geo.geocode({'address': val.PhysicalZipCode}, function (results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+          var lat = results[0].geometry.location.lat() + Math.random() * (0.120 - 0.0200) + 0.0200;
+          var lng = results[0].geometry.location.lng() + Math.random() * (0.120 - 0.0200) + 0.0200;
+          var marker = new google.maps.Marker({
+            position: {lat: lat, lng: lng},
+            type: 'info',
+            //icon: icons[feature.type].icon,
+            map: map
+          });
+          var html = "<b>" + val.ProviderName + "</b><br/>" + val.PhysicalCity + ",<br/>" + val.ProviderTypeDescription + "<br />Rating: " + val.QualityRating
+            + "<br/> " + val.PhoneNumber;
+
+          var infoWindow = new google.maps.InfoWindow;
+          google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.setContent(html);
+            infoWindow.open(map, marker);
+          });
         }
-        $('#result-note').text(text);
+      });
+
+    });
+  }
+
+  function renderFilters() {
+    //alert('in render filters ' + filteredResults.length());
+  }
+
+  /**
+   * Changes text next to search
+   */
+  function renderNote() {
+    //alert('in render listing ' + filteredResults.length());
+    var text;
+    if (!filteredResults.results || !filteredResults.results.length) {
+      text = '';
+    }
+    else {
+      text = "There are " + filteredResults.results.length
+        + " child care providers within the " + filteredResults.activeFilters.zip + " zipcode.";
+    }
+    $('#result-note').text(text);
+  }
+
+  (function ($) {
+
+    $('#zip-code').keypress(function (ev) {
+      var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+      if (keycode == '13') {
+        searchForZip();
       }
+    });
+    // Call once to populate
+    resetResults(function () {
+      console.log(filteredResults);
+    });
 
-      (function($) {
-
-        $('#zip-code').keypress(function (ev) {
-            var keycode = (ev.keyCode ? ev.keyCode : ev.which);
-            if (keycode == '13') {
-                searchForZip();
-            }
-        });
-        // Call once to populate
-        resetResults(function() {
-            console.log(filteredResults);
-        });
-
-      })(jQuery);
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4dPQm3pmKn5E45kLhsPqovQhj3iihBdU&callback=renderMap">
-    </script>
-  </body>
+  })(jQuery);
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4dPQm3pmKn5E45kLhsPqovQhj3iihBdU&callback=renderMap">
+</script>
+</body>
 </html>
