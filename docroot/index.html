@@ -31,13 +31,20 @@
             this.results = [];
             // Setter for zipcode
             this.applyFilters = function() {
-                // Filter by zip
+                // Filter by lat/lng
                 var results = [];
                 if(this.activeFilters) {
-                    // Filter by zip
-                    if(this.activeFilters.zip) {
+                    // Filter by lat/lng
+                    if(this.activeFilters.lat && this.activeFilters.lng) {
                        results = this.fullResults.filter(function(item) {
-                            return parseInt(this.activeFilters.zip) === parseInt(item.PhysicalZipCode)
+                         console.log(Number(this.activeFilters.lat).toFixed(2));
+                         console.log(Number(this.activeFilters.lng).toFixed(2));
+                         console.log(Number(item.lat).toFixed(2));
+                         console.log(Number(item.lng).toFixed(2));
+                            if(Number(this.activeFilters.lat).toFixed(2) === Number(item.lat).toFixed(2) &&
+                              Number((this.activeFilters.lng)).toFixed(2) === Number(item.lng).toFixed(2)) {
+                              return item;
+                            }
                        }, this);
                     }
                     // filter by provider type
@@ -231,7 +238,8 @@
         toggleMap();
         toggleLanding();
         var filters = {
-            zip: document.getElementById('zip-code').value
+            lat: localStorage.getItem('entryLat'),
+            lng: localStorage.getItem('entryLng')
         };
         // Got a new zip, so filter
         filterResults(filters, function() {
